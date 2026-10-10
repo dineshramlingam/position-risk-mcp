@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "position-risk-mcp"
+name = "trading-position-risk-mcp"
 version = "0.1.0"
 description = "Deterministic position sizing and pre-trade risk gate for trading agents, served over MCP"
 requires-python = ">=3.11"

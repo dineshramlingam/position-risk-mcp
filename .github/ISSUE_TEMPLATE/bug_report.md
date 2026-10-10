@@ -12,4 +12,4 @@ labels: bug
 
 **Response** (verdict, `reasons`, `binding_limits`)
 
-**Version** (`pip show position-risk-mcp`) and Python version
+**Version** (`pip show trading-position-risk-mcp`) and Python version

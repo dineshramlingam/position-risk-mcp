@@ -1,4 +1,4 @@
-# position-risk-mcp
+# trading-position-risk-mcp
 
 > **Not financial advice. Use at your own risk.** This is a guardrail that enforces rules *you* configure.
 > It cannot see your broker, does not place orders, and trusts what the agent reports. It can be wrong,
