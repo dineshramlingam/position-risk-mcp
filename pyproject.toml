@@ -7,13 +7,31 @@ name = "trading-position-risk-mcp"
 version = "0.1.0"
 description = "Deterministic position sizing and pre-trade risk gate for trading agents, served over MCP"
 requires-python = ">=3.11"
+readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
+authors = [{ name = "Dinesh Ramalingam" }]
+keywords = ["mcp", "trading", "risk-management", "position-sizing", "futures", "ai-agents"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Financial and Insurance Industry",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
 dependencies = [
   "mcp>=1.2,<2",        # FastMCP API; mcp 2.x renamed it (MCPServer)
   "pydantic>=2.6",
   "pyyaml>=6",
 ]
+
+[project.urls]
+Homepage = "https://github.com/dineshrm15/trading-position-risk-mcp"
+Issues = "https://github.com/dineshrm15/trading-position-risk-mcp/issues"
+Source = "https://github.com/dineshrm15/trading-position-risk-mcp"
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
@@ -24,6 +42,9 @@ position-risk-admin = "trading_position_risk_mcp.admin:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/trading_position_risk_mcp"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"config" = "trading_position_risk_mcp/defaults"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

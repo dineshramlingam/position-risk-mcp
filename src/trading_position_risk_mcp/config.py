@@ -10,14 +10,22 @@ from .instruments import InstrumentRegistry
 from .rules import load_rulebook
 from .state import JsonFileStore
 
-_REPO_CONFIG = Path(__file__).resolve().parents[2] / "config"
+_PACKAGED_DEFAULTS = Path(__file__).resolve().parent / "defaults"      # present in wheels and sdists
+_REPO_CONFIG = Path(__file__).resolve().parents[2] / "config"          # present in a source checkout
+
+
+def _fallback(filename: str) -> Path:
+    for d in (_PACKAGED_DEFAULTS, _REPO_CONFIG):
+        if (d / filename).exists():
+            return d / filename
+    return _REPO_CONFIG / filename
 
 
 def _path(env: str, filename: str) -> Path:
     if os.environ.get(env):
         return Path(os.environ[env]).expanduser()
     local = Path.cwd() / "config" / filename
-    return local if local.exists() else _REPO_CONFIG / filename
+    return local if local.exists() else _fallback(filename)
 
 
 def build_engine() -> RiskEngine:

@@ -24,3 +24,21 @@ jobs:
           cache-dependency-path: pyproject.toml
       - run: pip install -e ".[dev]"
       - run: pytest -q
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check --strict dist/*
+      - name: Smoke-test the wheel from an empty directory (packaged default config must be found)
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install dist/*.whl
+          cd "$(mktemp -d)"
+          export POSITION_RISK_STATE="$PWD/state.json"
+          /tmp/smoke/bin/position-risk-admin size ES long 6500 6498 --no-costs | grep '"contracts": 5'
