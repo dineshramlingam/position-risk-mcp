@@ -1,0 +1,30 @@
+# Contract specifications.
+#
+# point_value  = dollars per 1.0 price point per contract (the multiplier for options)
+# tick_size    = minimum price increment
+# bucket       = exposure group; risk in the same bucket is capped together
+# micro        = smaller contract to fall back to when the full size rounds to 0
+# margin_per_contract = OPTIONAL. Margin changes often and differs by broker and by
+#                       intraday vs overnight. Leave null unless you set it from your
+#                       broker; the margin check is skipped when it is null.
+
+futures:
+  ES:  {name: "E-mini S&P 500",          point_value: 50,    tick_size: 0.25, bucket: us_equity_index, micro: MES, margin_per_contract: null}
+  MES: {name: "Micro E-mini S&P 500",    point_value: 5,     tick_size: 0.25, bucket: us_equity_index, is_micro: true, margin_per_contract: null}
+  NQ:  {name: "E-mini Nasdaq-100",       point_value: 20,    tick_size: 0.25, bucket: us_equity_index, micro: MNQ, margin_per_contract: null}
+  MNQ: {name: "Micro E-mini Nasdaq-100", point_value: 2,     tick_size: 0.25, bucket: us_equity_index, is_micro: true, margin_per_contract: null}
+  RTY: {name: "E-mini Russell 2000",     point_value: 50,    tick_size: 0.10, bucket: us_equity_index, micro: M2K, margin_per_contract: null}
+  M2K: {name: "Micro E-mini Russell 2000", point_value: 5,   tick_size: 0.10, bucket: us_equity_index, is_micro: true, margin_per_contract: null}
+  YM:  {name: "E-mini Dow",              point_value: 5,     tick_size: 1.0,  bucket: us_equity_index, micro: MYM, margin_per_contract: null}
+  MYM: {name: "Micro E-mini Dow",        point_value: 0.5,   tick_size: 1.0,  bucket: us_equity_index, is_micro: true, margin_per_contract: null}
+  CL:  {name: "Crude Oil",               point_value: 1000,  tick_size: 0.01, bucket: energy, micro: MCL, margin_per_contract: null}
+  MCL: {name: "Micro Crude Oil",         point_value: 100,   tick_size: 0.01, bucket: energy, is_micro: true, margin_per_contract: null}
+  GC:  {name: "Gold",                    point_value: 100,   tick_size: 0.10, bucket: metals, micro: MGC, margin_per_contract: null}
+  MGC: {name: "Micro Gold",              point_value: 10,    tick_size: 0.10, bucket: metals, is_micro: true, margin_per_contract: null}
+
+# Option underlyings. Risk is sized from the structure's defined max loss.
+options:
+  SPX: {name: "S&P 500 Index options",  point_value: 100, tick_size: 0.05, bucket: us_equity_index}
+  XSP: {name: "Mini-SPX Index options", point_value: 100, tick_size: 0.01, bucket: us_equity_index}
+  SPY: {name: "SPY ETF options",        point_value: 100, tick_size: 0.01, bucket: us_equity_index}
+  QQQ: {name: "QQQ ETF options",        point_value: 100, tick_size: 0.01, bucket: us_equity_index}

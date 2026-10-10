@@ -1,0 +1,60 @@
+# Risk rulebook. Owned by the human, not the agent.
+# The MCP server only reads this file; no tool can change it. Bump `version`
+# whenever you edit it. Every tool response includes the version and a
+# fingerprint of this file, so journals show which rules were in force.
+
+version: "1.0.0"
+
+account:
+  # Starting equity, used only the first time the state file is created.
+  # After that, equity comes from realized P&L or from the admin CLI
+  # (`position-risk-admin set-equity`). Agents can never pass in an account size.
+  starting_equity: 55000
+  timezone: America/New_York   # sets when the trading day rolls over
+
+per_trade:
+  default_risk_pct: 1.0        # % of equity risked per trade when the agent doesn't ask
+  max_risk_pct: 2.0            # hard ceiling; larger requests are cut down to this
+
+portfolio:
+  max_open_risk_pct: 5.0       # total risk across all open positions ("heat")
+  max_bucket_risk_pct: 3.0     # risk in one exposure bucket (ES+MES+NQ+SPX...)
+  max_open_positions: 4
+  max_margin_utilization_pct: 50   # only applies to instruments with margin set
+
+daily:
+  max_daily_loss_pct: 3.0      # realized loss for the day that triggers a lockout
+  # If true, a new trade's full stop-out, plus the risk already open, must still
+  # fit inside today's remaining loss budget, so stops can't push you past the limit.
+  reserve_open_risk: true
+
+# Size multipliers based on drawdown from peak equity. The highest tier reached applies.
+# A multiplier of 0 halts trading until you reset the peak with the admin CLI.
+drawdown_tiers:
+  - {from_peak_pct: 5,  size_multiplier: 0.5}
+  - {from_peak_pct: 10, size_multiplier: 0.0}
+
+costs:
+  # Round-turn commission + fees per contract (futures) or per contract per leg (options).
+  # Lookup order: symbol, then "options" (for option underlyings), then "default".
+  commission_round_turn:
+    default: 4.00
+    MES: 1.50
+    MNQ: 1.50
+    M2K: 1.50
+    MYM: 1.50
+    MCL: 1.50
+    MGC: 1.50
+    options: 1.30
+  slippage_ticks: 1            # adverse ticks assumed on a futures stop exit
+
+stops:
+  allow_widening: false        # an open stop can be moved closer, never further away
+
+approvals:
+  ttl_seconds: 300             # check_trade approval tokens expire after this
+
+max_contracts:                 # per-trade contract cap per symbol
+  default: 100
+  ES: 20
+  NQ: 20
