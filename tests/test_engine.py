@@ -2,8 +2,8 @@ from decimal import Decimal
 
 import pytest
 
-from position_risk_mcp.engine import APPROVED, REJECTED, RESIZED, RiskEngineError
-from position_risk_mcp.sizing import spreadsheet_size
+from trading_position_risk_mcp.engine import APPROVED, REJECTED, RESIZED, RiskEngineError
+from trading_position_risk_mcp.sizing import spreadsheet_size
 
 
 # ---------------------------------------------------------------- sizing basics
@@ -233,7 +233,7 @@ def test_partial_close(engine):
 
 
 def test_state_persists_across_engine_instances(engine, rules, registry, clock):
-    from position_risk_mcp.engine import RiskEngine
+    from trading_position_risk_mcp.engine import RiskEngine
     _open(engine, contracts=2)
     e2 = RiskEngine(rules, registry, store=engine.store, now=clock)
     assert len(e2.risk_state()["positions"]) == 1

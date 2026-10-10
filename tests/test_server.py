@@ -8,7 +8,7 @@ import pytest
 @pytest.fixture
 def server(tmp_path, monkeypatch):
     monkeypatch.setenv("POSITION_RISK_STATE", str(tmp_path / "state.json"))
-    from position_risk_mcp import config, server as srv
+    from trading_position_risk_mcp import config, server as srv
     config.get_engine.cache_clear()
     yield srv
     config.get_engine.cache_clear()

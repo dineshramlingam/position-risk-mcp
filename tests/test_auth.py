@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from position_risk_mcp.auth import BearerAuth, check_bind
+from trading_position_risk_mcp.auth import BearerAuth, check_bind
 
 TOKEN = "x" * 32
 

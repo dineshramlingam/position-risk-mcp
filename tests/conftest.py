@@ -4,10 +4,10 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from position_risk_mcp.engine import RiskEngine
-from position_risk_mcp.instruments import InstrumentRegistry
-from position_risk_mcp.rules import load_rulebook
-from position_risk_mcp.state import JsonFileStore
+from trading_position_risk_mcp.engine import RiskEngine
+from trading_position_risk_mcp.instruments import InstrumentRegistry
+from trading_position_risk_mcp.rules import load_rulebook
+from trading_position_risk_mcp.state import JsonFileStore
 
 CONFIG = Path(__file__).resolve().parents[1] / "config"
 NY = ZoneInfo("America/New_York")

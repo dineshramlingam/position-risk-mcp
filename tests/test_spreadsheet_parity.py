@@ -10,7 +10,7 @@ from decimal import Decimal
 
 import pytest
 
-from position_risk_mcp.sizing import spreadsheet_size
+from trading_position_risk_mcp.sizing import spreadsheet_size
 
 POINT_VALUE = 50   # K7
 ACCOUNT = 55000    # H5
