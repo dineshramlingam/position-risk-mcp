@@ -1,5 +1,9 @@
 # position-risk-mcp
 
+> **Not financial advice. Use at your own risk.** This is a guardrail that enforces rules *you* configure.
+> It cannot see your broker, does not place orders, and trusts what the agent reports. It can be wrong,
+> and trading can lose money. Test with paper trading first. See [Security and trust model](#security-and-trust-model).
+
 A deterministic position-sizing and pre-trade risk server for trading agents, served over MCP.
 
 Agents never do sizing math themselves. They ask this server. It applies a rulebook that the human
