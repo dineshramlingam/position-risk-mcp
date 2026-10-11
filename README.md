@@ -15,6 +15,19 @@ fallback, portfolio heat, exposure buckets, a daily-loss lockout, drawdown tiers
 
 ## Quick start
 
+Requires **Python 3.11+**. The easiest way to run the commands is `uvx` or `pipx`:
+
+```bash
+uvx --python 3.11 --from trading-position-risk-mcp position-risk-admin show
+```
+
+First run: the server starts with the `starting_equity` in `rules.yaml` ($55,000 by default). Enter your
+real account size once, before any agent trades:
+
+```bash
+position-risk-admin set-equity 25000 --note "initial"
+```
+
 ```bash
 pip install -e ".[dev]"
 pytest                                   # 190+ tests, including spreadsheet parity

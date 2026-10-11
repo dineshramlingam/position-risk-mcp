@@ -508,6 +508,7 @@ class RiskEngine:
             s.peak_equity = max(s.peak_equity, s.equity)
             s.day.realized_pnl += pnl
             s.day.trades_closed += 1
+            s.trades_closed_total += 1
             if n == pos.contracts:
                 del s.positions[position_id]
             else:
@@ -553,11 +554,18 @@ class RiskEngine:
 
     def admin_set_equity(self, amount, reset_peak: bool = False, note: str = "") -> dict:
         with self.store.transaction() as s:
+            self._housekeeping(s)
             old = s.equity
+            # Nothing has ever been traded and the peak never moved off the starting equity: this is the
+            # owner entering the real account size for the first time, not a drawdown to remember.
+            first_run = s.trades_closed_total == 0 and not s.positions and s.peak_equity == old
             s.equity = to_dec(amount)
-            if reset_peak or s.equity > s.peak_equity:
+            if reset_peak or first_run or s.equity > s.peak_equity:
                 s.peak_equity = s.equity
-            s.log("admin_set_equity", old=str(old), new=str(s.equity), reset_peak=reset_peak, note=note)
+            # The daily loss limit is a % of the day's opening equity; keep it consistent with the new balance.
+            s.day.start_equity = s.equity - s.day.realized_pnl
+            s.log("admin_set_equity", old=str(old), new=str(s.equity), reset_peak=reset_peak,
+                  first_run=first_run, note=note)
             return self._context(s)
 
     def admin_reset_peak(self, note: str = "") -> dict:

@@ -140,9 +140,16 @@ def test_daily_budget_reserves_open_risk(engine):
     assert r["approved_contracts"] == 6
 
 
+def _seed_drawdown(engine, equity):
+    """Equity drops below a 55k peak after real trading (a fresh set-equity would reset the peak)."""
+    with engine.store.transaction() as s:
+        s.trades_closed_total = 1
+        s.equity = Decimal(equity)
+        s.day.start_equity = s.equity
+
+
 def test_drawdown_tier_halves_size(engine):
-    engine.admin_set_equity(55000, reset_peak=True)
-    engine.admin_set_equity(52000)                      # -5.45% from peak
+    _seed_drawdown(engine, 52000)                       # -5.45% from peak
     r = engine.check_trade(symbol="MES", side="long", entry=6500, stop=6490)
     # 52000 * 1% * 0.5 = 260 ; 260 / 52.75 = 4.9
     assert r["approved_contracts"] == 4
@@ -150,8 +157,7 @@ def test_drawdown_tier_halves_size(engine):
 
 
 def test_drawdown_halt(engine):
-    engine.admin_set_equity(55000, reset_peak=True)
-    engine.admin_set_equity(49000)                      # -10.9%
+    _seed_drawdown(engine, 49000)                       # -10.9%
     r = engine.check_trade(symbol="MES", side="long", entry=6500, stop=6490, contracts=1)
     assert r["verdict"] == REJECTED and r["reasons"][0]["rule"] == "drawdown_halt"
     engine.admin_reset_peak(note="reviewed")
@@ -305,3 +311,30 @@ def test_rulebook_change_flagged_until_acked(engine, rules):
     assert engine.risk_state()["account"]["rulebook_changed"] is True
     engine.admin_ack_rulebook()
     assert engine.risk_state()["account"]["rulebook_changed"] is False
+
+
+# ---------------------------------------------------------------- admin set-equity
+
+def test_first_run_set_equity_below_default_does_not_halt(engine):
+    ctx = engine.admin_set_equity(25000)
+    assert ctx["peak_equity"] == 25000 and ctx["trading_halted"] is False
+    assert ctx["daily_loss_limit"] == 750          # 3% of the new balance, not of the old default
+
+
+def test_set_equity_after_losses_keeps_the_peak(engine):
+    a = engine.check_trade(symbol="MES", side="long", entry=6500, stop=6490, contracts=1)
+    pid = engine.record_fill(approval_id=a["approval_id"], fill_price=6500)["position_id"]
+    engine.record_close(position_id=pid, exit_price=6490)          # a real loss: not a first run
+    peak = engine.risk_state()["account"]["peak_equity"]
+    ctx = engine.admin_set_equity(20000)
+    assert ctx["peak_equity"] == peak and ctx["drawdown_pct"] > 10 and ctx["trading_halted"] is True
+
+
+def test_set_equity_keeps_todays_realized_loss_in_the_daily_basis(engine):
+    a = engine.check_trade(symbol="MES", side="long", entry=6500, stop=6490, contracts=1)
+    pid = engine.record_fill(approval_id=a["approval_id"], fill_price=6500)["position_id"]
+    engine.record_close(position_id=pid, exit_price=6490)
+    realized = engine.risk_state()["account"]["daily_realized_pnl"]
+    ctx = engine.admin_set_equity(25000)
+    assert ctx["daily_realized_pnl"] == realized
+    assert ctx["daily_loss_limit"] == pytest.approx((25000 - realized) * 0.03, abs=0.01)

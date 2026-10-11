@@ -81,6 +81,7 @@ class RiskState(BaseModel):
     day: DayState
     positions: dict[str, Position] = Field(default_factory=dict)
     approvals: dict[str, Approval] = Field(default_factory=dict)
+    trades_closed_total: int = 0          # lets set-equity tell a first-run sync from a real drawdown
     journal: list[dict] = Field(default_factory=list)
     created_with_rulebook: str | None = None
 

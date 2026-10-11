@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trading-position-risk-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Deterministic position sizing and pre-trade risk gate for trading agents, served over MCP"
 requires-python = ">=3.11"
 readme = "README.md"
