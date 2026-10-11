@@ -1,5 +1,10 @@
 # trading-position-risk-mcp
 
+[![PyPI](https://img.shields.io/pypi/v/trading-position-risk-mcp)](https://pypi.org/project/trading-position-risk-mcp/)
+[![Python](https://img.shields.io/pypi/pyversions/trading-position-risk-mcp)](https://pypi.org/project/trading-position-risk-mcp/)
+[![CI](https://github.com/dineshrm15/trading-position-risk-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/dineshrm15/trading-position-risk-mcp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 > **Not financial advice. Use at your own risk.** This is a guardrail that enforces rules *you* configure.
 > It cannot see your broker, does not place orders, and trusts what the agent reports. It can be wrong,
 > and trading can lose money. Test with paper trading first. See [Security and trust model](#security-and-trust-model).
